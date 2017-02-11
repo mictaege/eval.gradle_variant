@@ -25,6 +25,8 @@ sourceSets {
     test
     roskosmos
     roskosmostest
+    esa
+    esatest
 }
 
 repositories {
@@ -50,4 +52,15 @@ dependencies {
     roskosmostestCompile "org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version"
     roskosmostestCompile "com.natpryce:hamkrest:$hamkrest_version"
     roskosmostestCompile "org.mockito:mockito-core:$mockito_version"
+
+    esaCompile sourceSets.main.output
+    esaCompile "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
+    esaCompile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    esatestCompile sourceSets.esa.output
+    esatestCompile sourceSets.main.output
+    esatestCompile sourceSets.test.output
+    esatestCompile "junit:junit:$junit_version"
+    esatestCompile "org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version"
+    esatestCompile "com.natpryce:hamkrest:$hamkrest_version"
+    esatestCompile "org.mockito:mockito-core:$mockito_version"
 }
