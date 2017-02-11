@@ -6,11 +6,11 @@ import org.junit.Test
 
 class SpaceShipTypeTest {
 
-    @Test fun mercuryBrandShouldProvideName() {
+    @Test fun mercuryShouldProvideName() {
         SpaceShipType.Mercury.name shouldMatch equalTo("Mercury")
     }
 
-    @Test fun geminiBrandShouldProvideName() {
+    @Test fun geminiShouldProvideName() {
         SpaceShipType.Gemini.name shouldMatch equalTo("Gemini")
     }
 
