@@ -4,10 +4,10 @@ import com.natpryce.hamkrest.equalTo
 import com.natpryce.hamkrest.should.shouldMatch
 import org.junit.Test
 
-class LaunchPadTest {
+class DaoTest {
 
-    @Test fun shouldLaunchBearer() {
-        LaunchPad().launch().type.name shouldMatch equalTo("Ariane5")
+    @Test fun shouldProvideBearer() {
+        Dao().findBearers() shouldMatch equalTo(listOf(BearerType.Atlas, BearerType.Titan))
     }
 
 }
