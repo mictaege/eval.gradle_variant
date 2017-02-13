@@ -1,5 +1,6 @@
 package com.github.mictaege.eval.gradle_variant
 
+import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon.ROCKET
 import tornadofx.*
 import tornadofx.FX.Companion.messages
 
@@ -9,6 +10,9 @@ class TowerControlForm : View(messages["title"]) {
         fieldset(messages["title"]) {
             field(messages["bearerName"]) {
                 label(model.name)
+            }
+            field(messages["constructionYear"]) {
+                label(model.constructionYear)
             }
             field(messages["spaceShipName"]) {
                 label(model.spaceShip)

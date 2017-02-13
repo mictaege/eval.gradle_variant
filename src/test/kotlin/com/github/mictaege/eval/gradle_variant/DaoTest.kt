@@ -7,7 +7,7 @@ import org.junit.Test
 class DaoTest {
 
     @Test fun shouldProvideBearer() {
-        findBearers() shouldMatch equalTo(listOf(BearerType.Atlas, BearerType.Titan))
+        Dao().findBearers() shouldMatch equalTo(listOf(BearerType.Atlas, BearerType.Titan))
     }
 
 }

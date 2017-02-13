@@ -49,6 +49,8 @@ dependencies {
     roskosmosCompile sourceSets.main.output
     roskosmosCompile "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
     roskosmosCompile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    roskosmosCompile "no.tornado:tornadofx:$tornado_version"
+    roskosmosCompile "de.jensd:fontawesomefx:$fontawesomefx_version"
     roskosmostestCompile sourceSets.roskosmos.output
     roskosmostestCompile sourceSets.main.output
     roskosmostestCompile sourceSets.test.output
@@ -60,6 +62,8 @@ dependencies {
     esaCompile sourceSets.main.output
     esaCompile "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
     esaCompile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    esaCompile "no.tornado:tornadofx:$tornado_version"
+    esaCompile "de.jensd:fontawesomefx:$fontawesomefx_version"
     esatestCompile sourceSets.esa.output
     esatestCompile sourceSets.main.output
     esatestCompile sourceSets.test.output
