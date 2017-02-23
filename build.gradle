@@ -23,13 +23,106 @@ apply plugin: 'java'
 apply plugin: 'org.junit.platform.gradle.plugin'
 
 sourceSets {
-    main
-    test
-    roskosmos
-    roskosmostest
-    esa
-    esatest
+    main {
+        kotlin {
+            srcDir 'src/main/kotlin'
+        }
+        resources {
+            srcDir 'src/main/resources'
+        }
+    }
+    test {
+        kotlin {
+            srcDir 'src/test/kotlin'
+        }
+        resources {
+            srcDir 'src/test/resources'
+        }
+    }
+    nasa {
+        kotlin {
+            srcDir 'src/nasa/kotlin'
+        }
+        resources {
+            srcDir 'src/nasa/resources'
+        }
+    }
+    nasatest {
+        kotlin {
+            srcDir 'src/nasatest/kotlin'
+        }
+        resources {
+            srcDir 'src/nasatest/resources'
+        }
+    }
+    roskosmos {
+        kotlin {
+            srcDir 'src/roskosmos/kotlin'
+        }
+        resources {
+            srcDir 'src/roskosmos/resources'
+        }
+    }
+    roskosmostest {
+        kotlin {
+            srcDir 'src/roskosmostest/kotlin'
+        }
+        resources {
+            srcDir 'src/roskosmostest/resources'
+        }
+    }
+    esa {
+        kotlin {
+            srcDir 'src/esa/kotlin'
+        }
+        resources {
+            srcDir 'src/esa/resources'
+        }
+    }
+    esatest {
+        kotlin {
+            srcDir 'src/esatest/kotlin'
+        }
+        resources {
+            srcDir 'src/esatest/resources'
+        }
+    }
 }
+
+task flavorMain(type: Jar) {
+    from sourceSets.main.output
+    classifier = 'main'
+    manifest {
+        attributes "Main-Class": "com.github.mictaege.eval.gradle_variant.TowerControlAppKt"
+    }
+}
+
+task flavorNasa(type: Jar) {
+    from sourceSets.main.output, sourceSets.nasa.output, 
+    classifier = 'nasa'
+    manifest {
+        attributes "Main-Class": "com.github.mictaege.eval.gradle_variant.TowerControlAppKt"
+    }
+}
+
+task flavorRoskosmos(type: Jar) {
+    from sourceSets.main.output, sourceSets.roskosmos.output
+    classifier = 'roskosmos'
+    manifest {
+        attributes "Main-Class": "com.github.mictaege.eval.gradle_variant.TowerControlAppKt"
+    }
+}
+
+task flavorEsa(type: Jar) {
+    from sourceSets.main.output, sourceSets.esa.output
+    classifier = 'esa'
+    manifest {
+        attributes "Main-Class": "com.github.mictaege.eval.gradle_variant.TowerControlAppKt"
+    }
+}
+
+jar.dependsOn flavorMain, flavorNasa, flavorRoskosmos, flavorEsa
+
 
 repositories {
     mavenCentral()
@@ -45,6 +138,19 @@ dependencies {
     testCompile "org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version"
     testCompile "com.natpryce:hamkrest:$hamkrest_version"
     testCompile "org.mockito:mockito-core:$mockito_version"
+
+    nasaCompile sourceSets.main.output
+    nasaCompile "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
+    nasaCompile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    nasaCompile "no.tornado:tornadofx:$tornado_version"
+    nasaCompile "de.jensd:fontawesomefx:$fontawesomefx_version"
+    nasatestCompile sourceSets.nasa.output
+    nasatestCompile sourceSets.main.output
+    nasatestCompile sourceSets.test.output
+    nasatestCompile "junit:junit:$junit_version"
+    nasatestCompile "org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version"
+    nasatestCompile "com.natpryce:hamkrest:$hamkrest_version"
+    nasatestCompile "org.mockito:mockito-core:$mockito_version"
 
     roskosmosCompile sourceSets.main.output
     roskosmosCompile "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
