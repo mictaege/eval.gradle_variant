@@ -20,6 +20,7 @@ buildscript {
 
 apply plugin: 'kotlin'
 apply plugin: 'java'
+apply plugin: 'application'
 apply plugin: 'org.junit.platform.gradle.plugin'
 
 sourceSets {
@@ -92,30 +93,34 @@ sourceSets {
 task flavorMain(type: Jar) {
     from sourceSets.main.output
     classifier = 'main'
+    duplicatesStrategy = 'exclude'
     manifest {
         attributes "Main-Class": "com.github.mictaege.eval.gradle_variant.TowerControlAppKt"
     }
 }
 
 task flavorNasa(type: Jar) {
-    from sourceSets.main.output, sourceSets.nasa.output, 
+    from sourceSets.nasa.output, sourceSets.main.output
     classifier = 'nasa'
+    duplicatesStrategy = 'exclude'
     manifest {
         attributes "Main-Class": "com.github.mictaege.eval.gradle_variant.TowerControlAppKt"
     }
 }
 
 task flavorRoskosmos(type: Jar) {
-    from sourceSets.main.output, sourceSets.roskosmos.output
+    from sourceSets.roskosmos.output, sourceSets.main.output
     classifier = 'roskosmos'
+    duplicatesStrategy = 'exclude'
     manifest {
         attributes "Main-Class": "com.github.mictaege.eval.gradle_variant.TowerControlAppKt"
     }
 }
 
 task flavorEsa(type: Jar) {
-    from sourceSets.main.output, sourceSets.esa.output
+    from sourceSets.esa.output, sourceSets.main.output
     classifier = 'esa'
+    duplicatesStrategy = 'exclude'
     manifest {
         attributes "Main-Class": "com.github.mictaege.eval.gradle_variant.TowerControlAppKt"
     }
@@ -123,6 +128,60 @@ task flavorEsa(type: Jar) {
 
 jar.dependsOn flavorMain, flavorNasa, flavorRoskosmos, flavorEsa
 
+distributions {
+    nasa {
+        baseName = "$project.name-nasa"
+        contents {
+            into('bin') {
+                from startScripts.outputs.files
+            }
+            into('lib') {
+                from (sourceSets.nasa.runtimeClasspath) {
+                    exclude { d -> d.file.isDirectory() }
+                } 
+                from ("build/libs/gradle_variant-$version-nasa.jar") {
+                    rename {n -> n.replace('-nasa', '')}
+                } 
+            }
+        }
+    }
+    roskosmos {
+        baseName = "$project.name-roskosmos"
+        contents {
+            into('bin') {
+                from startScripts.outputs.files
+            }
+            into('lib') {
+                from (sourceSets.nasa.runtimeClasspath) {
+                    exclude { d -> d.file.isDirectory() }
+                }
+                from ("build/libs/gradle_variant-$version-roskosmos.jar") {
+                    rename {n -> n.replace('-roskosmos', '')}
+                }
+            }
+        }
+    }
+    esa {
+        baseName = "$project.name-esa"
+        contents {
+            into('bin') {
+                from startScripts.outputs.files
+            }
+            into('lib') {
+                from (sourceSets.nasa.runtimeClasspath) {
+                    exclude { d -> d.file.isDirectory() }
+                }
+                from ("build/libs/gradle_variant-$version-esa.jar") {
+                    rename {n -> n.replace('-esa', '')}
+                }
+            }
+        }
+    }
+}
+
+mainClassName = "com.github.mictaege.eval.gradle_variant.TowerControlAppKt"
+
+distZip.dependsOn nasaDistZip, roskosmosDistZip, esaDistZip
 
 repositories {
     mavenCentral()
