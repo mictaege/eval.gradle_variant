@@ -3,6 +3,8 @@ version '1.0-SNAPSHOT'
 
 buildscript {
     ext.kotlin_version = '1.0.6'
+    ext.tornado_version = '1.5.8'
+    ext.fontawesomefx_version = '8.9'
     ext.junit_version = '4.11'
     ext.junit_gradle_plugin_version = '1.0.0-M2'
     ext.hamkrest_version = '1.2.3.0'
@@ -18,14 +20,168 @@ buildscript {
 
 apply plugin: 'kotlin'
 apply plugin: 'java'
+apply plugin: 'application'
 apply plugin: 'org.junit.platform.gradle.plugin'
 
 sourceSets {
-    main
-    test
-    roskosmos
-    roskosmostest
+    main {
+        kotlin {
+            srcDir 'src/main/kotlin'
+        }
+        resources {
+            srcDir 'src/main/resources'
+        }
+    }
+    test {
+        kotlin {
+            srcDir 'src/test/kotlin'
+        }
+        resources {
+            srcDir 'src/test/resources'
+        }
+    }
+    nasa {
+        kotlin {
+            srcDir 'src/nasa/kotlin'
+        }
+        resources {
+            srcDir 'src/nasa/resources'
+        }
+    }
+    nasatest {
+        kotlin {
+            srcDir 'src/nasatest/kotlin'
+        }
+        resources {
+            srcDir 'src/nasatest/resources'
+        }
+    }
+    roskosmos {
+        kotlin {
+            srcDir 'src/roskosmos/kotlin'
+        }
+        resources {
+            srcDir 'src/roskosmos/resources'
+        }
+    }
+    roskosmostest {
+        kotlin {
+            srcDir 'src/roskosmostest/kotlin'
+        }
+        resources {
+            srcDir 'src/roskosmostest/resources'
+        }
+    }
+    esa {
+        kotlin {
+            srcDir 'src/esa/kotlin'
+        }
+        resources {
+            srcDir 'src/esa/resources'
+        }
+    }
+    esatest {
+        kotlin {
+            srcDir 'src/esatest/kotlin'
+        }
+        resources {
+            srcDir 'src/esatest/resources'
+        }
+    }
 }
+
+task flavorMain(type: Jar) {
+    from sourceSets.main.output
+    classifier = 'main'
+    duplicatesStrategy = 'exclude'
+    manifest {
+        attributes "Main-Class": "com.github.mictaege.eval.gradle_variant.TowerControlAppKt"
+    }
+}
+
+task flavorNasa(type: Jar) {
+    from sourceSets.nasa.output, sourceSets.main.output
+    classifier = 'nasa'
+    duplicatesStrategy = 'exclude'
+    manifest {
+        attributes "Main-Class": "com.github.mictaege.eval.gradle_variant.TowerControlAppKt"
+    }
+}
+
+task flavorRoskosmos(type: Jar) {
+    from sourceSets.roskosmos.output, sourceSets.main.output
+    classifier = 'roskosmos'
+    duplicatesStrategy = 'exclude'
+    manifest {
+        attributes "Main-Class": "com.github.mictaege.eval.gradle_variant.TowerControlAppKt"
+    }
+}
+
+task flavorEsa(type: Jar) {
+    from sourceSets.esa.output, sourceSets.main.output
+    classifier = 'esa'
+    duplicatesStrategy = 'exclude'
+    manifest {
+        attributes "Main-Class": "com.github.mictaege.eval.gradle_variant.TowerControlAppKt"
+    }
+}
+
+jar.dependsOn flavorMain, flavorNasa, flavorRoskosmos, flavorEsa
+
+distributions {
+    nasa {
+        baseName = "$project.name-nasa"
+        contents {
+            into('bin') {
+                from startScripts.outputs.files
+            }
+            into('lib') {
+                from (sourceSets.nasa.runtimeClasspath) {
+                    exclude { d -> d.file.isDirectory() }
+                } 
+                from ("build/libs/gradle_variant-$version-nasa.jar") {
+                    rename {n -> n.replace('-nasa', '')}
+                } 
+            }
+        }
+    }
+    roskosmos {
+        baseName = "$project.name-roskosmos"
+        contents {
+            into('bin') {
+                from startScripts.outputs.files
+            }
+            into('lib') {
+                from (sourceSets.nasa.runtimeClasspath) {
+                    exclude { d -> d.file.isDirectory() }
+                }
+                from ("build/libs/gradle_variant-$version-roskosmos.jar") {
+                    rename {n -> n.replace('-roskosmos', '')}
+                }
+            }
+        }
+    }
+    esa {
+        baseName = "$project.name-esa"
+        contents {
+            into('bin') {
+                from startScripts.outputs.files
+            }
+            into('lib') {
+                from (sourceSets.nasa.runtimeClasspath) {
+                    exclude { d -> d.file.isDirectory() }
+                }
+                from ("build/libs/gradle_variant-$version-esa.jar") {
+                    rename {n -> n.replace('-esa', '')}
+                }
+            }
+        }
+    }
+}
+
+mainClassName = "com.github.mictaege.eval.gradle_variant.TowerControlAppKt"
+
+distZip.dependsOn nasaDistZip, roskosmosDistZip, esaDistZip
 
 repositories {
     mavenCentral()
@@ -34,15 +190,32 @@ repositories {
 dependencies {
     compile "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    compile "no.tornado:tornadofx:$tornado_version"
+    compile "de.jensd:fontawesomefx:$fontawesomefx_version"
 
     testCompile "junit:junit:$junit_version"
     testCompile "org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version"
     testCompile "com.natpryce:hamkrest:$hamkrest_version"
     testCompile "org.mockito:mockito-core:$mockito_version"
 
+    nasaCompile sourceSets.main.output
+    nasaCompile "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
+    nasaCompile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    nasaCompile "no.tornado:tornadofx:$tornado_version"
+    nasaCompile "de.jensd:fontawesomefx:$fontawesomefx_version"
+    nasatestCompile sourceSets.nasa.output
+    nasatestCompile sourceSets.main.output
+    nasatestCompile sourceSets.test.output
+    nasatestCompile "junit:junit:$junit_version"
+    nasatestCompile "org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version"
+    nasatestCompile "com.natpryce:hamkrest:$hamkrest_version"
+    nasatestCompile "org.mockito:mockito-core:$mockito_version"
+
     roskosmosCompile sourceSets.main.output
     roskosmosCompile "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
     roskosmosCompile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    roskosmosCompile "no.tornado:tornadofx:$tornado_version"
+    roskosmosCompile "de.jensd:fontawesomefx:$fontawesomefx_version"
     roskosmostestCompile sourceSets.roskosmos.output
     roskosmostestCompile sourceSets.main.output
     roskosmostestCompile sourceSets.test.output
@@ -50,4 +223,17 @@ dependencies {
     roskosmostestCompile "org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version"
     roskosmostestCompile "com.natpryce:hamkrest:$hamkrest_version"
     roskosmostestCompile "org.mockito:mockito-core:$mockito_version"
+
+    esaCompile sourceSets.main.output
+    esaCompile "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
+    esaCompile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    esaCompile "no.tornado:tornadofx:$tornado_version"
+    esaCompile "de.jensd:fontawesomefx:$fontawesomefx_version"
+    esatestCompile sourceSets.esa.output
+    esatestCompile sourceSets.main.output
+    esatestCompile sourceSets.test.output
+    esatestCompile "junit:junit:$junit_version"
+    esatestCompile "org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version"
+    esatestCompile "com.natpryce:hamkrest:$hamkrest_version"
+    esatestCompile "org.mockito:mockito-core:$mockito_version"
 }

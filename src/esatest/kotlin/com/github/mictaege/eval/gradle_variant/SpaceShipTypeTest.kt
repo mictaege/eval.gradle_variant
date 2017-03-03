@@ -4,10 +4,10 @@ import com.natpryce.hamkrest.equalTo
 import com.natpryce.hamkrest.should.shouldMatch
 import org.junit.Test
 
-class LaunchPadTest {
+class SpaceShipTypeTest {
 
-    @Test fun shouldLaunchBearer() {
-        LaunchPad().launch().type.name shouldMatch equalTo("Atlas")
+    @Test fun hermesShouldProvideName() {
+        SpaceShipType.Hermes.name shouldMatch equalTo("Hermes")
     }
 
 }
